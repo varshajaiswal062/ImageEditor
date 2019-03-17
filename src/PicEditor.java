@@ -1,0 +1,386 @@
+import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+/**
+ *
+ * @author crazy_fairy
+ */
+public class PicEditor extends JFrame implements ActionListener {
+
+    public static final int ROTATE_LEFT = 1;
+    public static final int ROTATE_RIGHT = -1;
+    BufferedImage bufferedImage;
+    String path;
+    boolean exists;
+    ImageIcon icon;
+    int result;
+    File selectedFile;
+
+    JFileChooser file;
+
+    public PicEditor() {
+        initComponents();
+        setTitle("ImageEditor");
+        open.addActionListener(this);
+        mirror.addActionListener(this);
+        sepia.addActionListener(this);
+        negative.addActionListener(this);
+        grayscale.addActionListener(this);
+        rotate.addActionListener(this);
+        rotateR.addActionListener(this);
+
+    }
+
+    public void choose() {
+        file = new JFileChooser();
+        file.setDialogTitle("Please choose an image..");
+        file.setCurrentDirectory(new File(System.getProperty("user.home")));
+        //filter the files
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("*.Images", "jpg", "gif", "png");
+        file.addChoosableFileFilter(filter);
+        result = file.showOpenDialog(null);
+
+        //if the user click on save in Jfilechooser
+        selectedFile = file.getSelectedFile();
+        boolean exists = false;
+        try {
+            selectedFile = file.getSelectedFile();
+            exists = selectedFile.exists();
+            path = selectedFile.getAbsolutePath();
+            System.out.print(path);
+            bufferedImage = ImageIO.read(selectedFile);
+        } catch (IOException ex) {
+            System.exit(0);
+        }
+        image.setIcon(ResizeImage(path));
+    }
+
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getActionCommand().equals("Open")) {
+            choose();
+        }
+
+        if (e.getActionCommand().equals("Mirror Image")) {
+            System.out.println(path);
+            try {
+                String fimage = MirrorImage.mirror(path);
+                output.setIcon(ResizeImage(fimage));
+                    //output.setIcon(MirrorImage.mirror(path));
+
+            } catch (Exception ex) {
+            }
+
+        }
+
+        if (e.getActionCommand().equals("Sepia Effect")) {
+            try {
+                String simage = Sepia.mSepia(path);
+                output.setIcon(ResizeImage(simage));
+            } catch (IOException ex) {
+                Logger.getLogger(PicEditor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+        if (e.getActionCommand().equals("Negative")) {
+
+            String nimage;
+            try {
+                nimage = Negative.mNegative(path);
+                output.setIcon(ResizeImage(nimage));
+            } catch (IOException ex) {
+                Logger.getLogger(PicEditor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+        if (e.getActionCommand().equals("Grayscale Image")) {
+            String gimage;
+
+            try {
+                gimage = Grayscale.mGrayScale(path);
+                output.setIcon(ResizeImage(gimage));
+            } catch (IOException ex) {
+                Logger.getLogger(PicEditor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        if (e.getActionCommand().equalsIgnoreCase("Rotate LEFT")) {
+            String rimage;
+            File ip = new File(path);
+            rimage = ImageRotate.rotate90(ip, ROTATE_LEFT);
+            output.setIcon(ResizeImage(rimage));
+        }
+        
+        if (e.getActionCommand().equalsIgnoreCase("Rotate RIGHT")) {
+            String rimage;
+            File ip = new File(path);
+            rimage = ImageRotate.rotate90(ip, ROTATE_RIGHT);
+            output.setIcon(ResizeImage(rimage));
+        }
+
+    }
+
+    public ImageIcon ResizeImage(String ImagePath) {
+        ImageIcon MyImage = new ImageIcon(ImagePath);
+        Image img = MyImage.getImage();
+        Image newImg = img.getScaledInstance(image.getWidth(), image.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon image = new ImageIcon(newImg);
+        return image;
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        open = new javax.swing.JButton();
+        mirror = new javax.swing.JButton();
+        grayscale = new javax.swing.JButton();
+        rotate = new javax.swing.JButton();
+        negative = new javax.swing.JButton();
+        image = new javax.swing.JLabel();
+        sepia = new javax.swing.JButton();
+        output = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        rotateR = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 153));
+
+        open.setBackground(new java.awt.Color(0, 0, 0));
+        open.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        open.setForeground(new java.awt.Color(255, 255, 51));
+        open.setText("Open");
+
+        mirror.setBackground(new java.awt.Color(0, 0, 0));
+        mirror.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        mirror.setForeground(new java.awt.Color(255, 255, 51));
+        mirror.setText("Mirror Image");
+
+        grayscale.setBackground(new java.awt.Color(0, 0, 0));
+        grayscale.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        grayscale.setForeground(new java.awt.Color(255, 255, 0));
+        grayscale.setText("Grayscale Image");
+        grayscale.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                grayscaleActionPerformed(evt);
+            }
+        });
+
+        rotate.setBackground(new java.awt.Color(0, 0, 0));
+        rotate.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        rotate.setForeground(new java.awt.Color(255, 255, 51));
+        rotate.setText("Rotate LEFT");
+        rotate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rotateActionPerformed(evt);
+            }
+        });
+
+        negative.setBackground(new java.awt.Color(0, 0, 0));
+        negative.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        negative.setForeground(new java.awt.Color(255, 255, 0));
+        negative.setText("Negative");
+
+        sepia.setBackground(new java.awt.Color(0, 0, 0));
+        sepia.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        sepia.setForeground(new java.awt.Color(255, 255, 0));
+        sepia.setText("Sepia Effect");
+        sepia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sepiaActionPerformed(evt);
+            }
+        });
+
+        jButton1.setBackground(new java.awt.Color(0, 0, 0));
+        jButton1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 0));
+        jButton1.setText("PHOTO EDITOR");
+
+        jButton2.setBackground(new java.awt.Color(0, 0, 0));
+        jButton2.setForeground(new java.awt.Color(255, 255, 0));
+        jButton2.setText("Original Image");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setBackground(new java.awt.Color(0, 0, 0));
+        jButton4.setForeground(new java.awt.Color(255, 255, 0));
+        jButton4.setText("Edited Image");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        rotateR.setBackground(new java.awt.Color(0, 0, 0));
+        rotateR.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        rotateR.setForeground(new java.awt.Color(255, 255, 51));
+        rotateR.setText("Rotate RIGHT");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(rotate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(open, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(grayscale, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(mirror, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sepia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(negative, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(rotateR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(231, 231, 231)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 45, Short.MAX_VALUE)
+                        .addComponent(image, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(output, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(190, 190, 190))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 883, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(224, 224, 224))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(open, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(mirror, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(grayscale, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(rotate, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(rotateR, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(negative, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(sepia, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(output, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+                        .addComponent(image, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(1297, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void grayscaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_grayscaleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_grayscaleActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void sepiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sepiaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sepiaActionPerformed
+
+    private void rotateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rotateActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(PicEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(PicEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(PicEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(PicEditor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new PicEditor().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton grayscale;
+    private javax.swing.JLabel image;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton mirror;
+    private javax.swing.JButton negative;
+    private javax.swing.JButton open;
+    private javax.swing.JLabel output;
+    private javax.swing.JButton rotate;
+    private javax.swing.JButton rotateR;
+    private javax.swing.JButton sepia;
+    // End of variables declaration//GEN-END:variables
+}
